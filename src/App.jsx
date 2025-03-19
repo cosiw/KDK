@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Main from './page/Main'
 import PlayerInfo from './page/PlayerInfo'
+import InputScore from './page/InputScore'
 import GameResult from './page/GameResult'
 
 function App() {
@@ -12,7 +13,7 @@ function App() {
     <Routes>
       <Route path ='/' element={<Main />}/>
       <Route path='/:groupCount/:peopleCount' element={<PlayerInfo />}/>
-      <Route path='/:groupCount/:peopleCount/score' element={<GameResult />}/>
+      <Route path='/:groupCount/:peopleCount/score' element={<InputScore />}/>
       <Route path='/:groupCount/:peopleCount/score/result' element={<GameResult />}/>
     </Routes>
   </BrowserRouter>

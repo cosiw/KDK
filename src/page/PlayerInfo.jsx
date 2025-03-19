@@ -1,7 +1,6 @@
 import InputPlayer from "../components/inputInfo/InputPlayer";
 
-function PlayerInfo({group, people}) {
-    console.log("hihi");
+function PlayerInfo() {
     return <div>
        <InputPlayer />
     </div>
