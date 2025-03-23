@@ -1,95 +1,79 @@
 export const GAMES = [
     {
-        KDK: [
-        {
-            number : 5,
-            matches :
-            [
-                {
-                    game1 : [[1,4],[2,3]],
-                    game2 : [[1,2],[3,5]],
-                    game3 : [[1,5],[2,4]],
-                    game4 : [[1,3],[4,5]],
-                    game5 : [[2,5],[3,4]]
-                }
-            ]
-        },
-        {
-            number : 6,
-            matches : [
-                {
-                    game1 : [[1,3],[2,5]],
-                    game2 : [[2,6],[4,5]],
-                    game3 : [[1,6],[3,5]],
-                    game4 : [[2,3],[4,6]],
-                    game5 : [[1,5],[2,4]],
-                    game6 : [[1,4],[3,6]]
-                }
-            ]
-        },
-        {
-            number : 7,
-            matches : [
-                {
-                    game1 : [[1,7],[2,6]],
-                    game2 : [[2,5],[3,6]],
-                    game3 : [[1,4],[5,6]],
-                    game4 : [[2,7],[4,5]],
-                    game5 : [[1,5],[3,7]],
-                    game6 : [[3,4],[6,7]],
-                    game7 : [[1,3],[2,4]]
-                }
-            ]
-        },
-        {
-            number : 8,
-            matches :[
-                {
-                    game1 : [[1,8],[2,7]],
-                    game2 : [[3,6],[4,5]],
-                    game3 : [[1,6],[2,5]],
-                    game4 : [[3,8],[4,7]],
-                    game5 : [[1,7],[4,6]],
-                    game6 : [[2,8],[3,5]],
-                    game7 : [[2,6],[3,7]],
-                    game8 : [[1,5],[4,8]]
-                }
-            ]
-        },
-        {
-            number : 9,
-            matches :[
-                {
-                    game1 : [[1,8],[2,7]],
-                    game2 : [[3,6],[4,5]],
-                    game3 : [[1,6],[7,9]],
-                    game4 : [[2,5],[3,4]],
-                    game5 : [[5,8],[6,9]],
-                    game6 : [[1,4],[2,3]],
-                    game7 : [[5,7],[6,8]],
-                    game8 : [[1,9],[3,8]],
-                    game9 : [[2,9],[4,7]]
-                }   
-            ]
-        },
-        {
-            number : 10,
-            matches :[
-                {
-                    game1 : [[1,10],[2,9]],
-                    game2 : [[3,7],[4,8]],
-                    game3 : [[1,9],[5,6]],
-                    game4 : [[2,10],[3,8]],
-                    game5 : [[3,9],[5,7]],
-                    game6 : [[2,8],[4,6]],
-                    game7 : [[1,6],[3,10]],
-                    game8 : [[1,7],[4,5]],
-                    game9 : [[2,6],[5,8]],
-                    game10 : [[7,9],[4,10]]
-                }
-            ]
-        }
+        number : 5,
+        matches :
+        [
+            {game: 1, team1: [1, 4], team2: [2, 3] },
+            {game: 2, team1: [1, 2], team2: [3, 5] },
+            {game: 3, team1: [1, 5], team2: [2, 4] },
+            {game: 4, team1: [1, 3], team2: [4, 5] },
+            {game: 5, team1: [2, 5], team2: [3, 4] }
         ]
-        
+    },
+    {
+        number : 6,
+        matches : [
+            {game: 1,  team1:[1, 3], team2:[2, 5] },
+            {game: 2,  team1:[2, 6], team2:[4, 5] },
+            {game: 3,  team1:[1, 6], team2:[3, 5] },
+            {game: 4,  team1:[2, 3], team2:[4, 6] },
+            {game: 5,  team1:[1, 5], team2:[2, 4] },
+            {game: 6,  team1:[1, 4], team2:[3, 6] }
+        ]
+    },
+    {
+        number : 7,
+        matches : [
+            {game: 1, team1:[1,7], team2:[2,6] },
+            {game: 2, team1:[2,5], team2:[3,6] },
+            {game: 3, team1:[1,4], team2:[5,6] },
+            {game: 4, team1:[2,7], team2:[4,5] },
+            {game: 5, team1:[1,5], team2:[3,7] },
+            {game: 6, team1:[3,4], team2:[6,7] },
+            {game: 7, team1:[1,3], team2:[2,4] }
+        ]
+    },
+    {
+        number : 8,
+        matches :[
+            {game: 1, team1:[1,8], team2:[2,7] },
+            {game: 2, team1:[3,6], team2:[4,5] },
+            {game: 3, team1:[1,6], team2:[2,5] },
+            {game: 4, team1:[3,8], team2:[4,7] },
+            {game: 5, team1:[1,7], team2:[4,6] },
+            {game: 6, team1:[2,8], team2:[3,5] },
+            {game: 7, team1:[2,6], team2:[3,7] },
+            {game: 8, team1:[1,5], team2:[4,8] }
+        ]
+    },
+    {
+        number : 9,
+        matches :[
+            {game: 1, team1:[1,8], team2:[2,7] },
+            {game: 2, team1:[3,6], team2:[4,5] },
+            {game: 3, team1:[1,6], team2:[7,9] },
+            {game: 4, team1:[2,5], team2:[3,4] },
+            {game: 5, team1:[5,8], team2:[6,9] },
+            {game: 6, team1:[1,4], team2:[2,3] },
+            {game: 7, team1:[5,7], team2:[6,8] },
+            {game: 8, team1:[1,9], team2:[3,8] },
+            {game: 9, team1:[2,9], team2:[4,7] }
+             
+        ]
+    },
+    {
+        number : 10,
+        matches :[
+            {game: 1, team1: [1,10], team2:[2,9]},
+            {game: 2, team1: [3,7], team2:[4,8]},
+            {game: 3, team1: [1,9], team2:[5,6]},
+            {game: 4, team1: [2,10], team2:[3,8]},
+            {game: 5, team1: [3,9], team2:[5,7]},
+            {game: 6, team1: [2,8], team2:[4,6]},
+            {game: 7, team1: [1,6], team2:[3,10]},
+            {game: 8, team1: [1,7], team2:[4,5]},
+            {game: 9, team1: [2,6], team2:[5,8]},
+            {game: 10, team1: [7,9], team2:[4,10]}         
+        ]
     }
 ]

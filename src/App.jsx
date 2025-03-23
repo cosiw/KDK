@@ -13,8 +13,8 @@ function App() {
     <Routes>
       <Route path ='/' element={<Main />}/>
       <Route path='/:groupCount/:peopleCount' element={<PlayerInfo />}/>
-      <Route path='/:groupCount/:peopleCount/score' element={<InputScore />}/>
-      <Route path='/:groupCount/:peopleCount/score/result' element={<GameResult />}/>
+      <Route path='/:groupCount/:peopleCount/:matchId' element={<InputScore />}/>
+      <Route path='/:groupCount/:peopleCount/:matchId/result' element={<GameResult />}/>
     </Routes>
   </BrowserRouter>
   )
@@ -27,5 +27,5 @@ export default App
 
 // 사람 이름 입력 /:group/:people
 
-// 점수 입력 -> url 접근 /:group/:people/score
-// 계산 결과 -> url 접근 /:group/:people/socre/result
+// 점수 입력 -> url 접근 /:group/:people/:matchId
+// 계산 결과 -> url 접근 /:group/:people/:matchId/result
