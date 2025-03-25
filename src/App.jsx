@@ -12,8 +12,8 @@ function App() {
     <BrowserRouter> 
     <Routes>
       <Route path ='/' element={<Main />}/>
-      <Route path='/:groupCount/:peopleCount' element={<PlayerInfo />}/>
-      <Route path='/:groupCount/:peopleCount/:matchId' element={<InputScore />}/>
+      <Route path='/:tournamentId' element={<PlayerInfo />}/>
+      <Route path='/:tournamentId/match' element={<InputScore />}/>
       <Route path='/:groupCount/:peopleCount/:matchId/result' element={<GameResult />}/>
     </Routes>
   </BrowserRouter>

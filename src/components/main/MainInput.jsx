@@ -2,20 +2,23 @@ import React from 'react';
 import {useState} from 'react';
 import styles from './MainInput.module.css';
 import {useNavigate} from 'react-router-dom';
+import { v4 as uuidv4 } from 'uuid';
 
-function MainInput({setMode, setGroupCount}) {
-    
-    
-    const navigate = useNavigate();
+function MainInput({setMode}) {
 
+    const [groupCount, setGroupCount] = useState(0);
     // 조 개수 입력 값 업데이트
     const handleGroupChange = (event) => {
       setGroupCount(event.target.value);
     };
-  
+    
+    
 
     const onButtonClick = () => {
-        setMode("people");
+      const tournamentId = uuidv4();
+      localStorage.setItem('tournamentId', tournamentId);
+      localStorage.setItem('groupCount', groupCount);
+      setMode('people');
     }
     return <div>
         <img style={{width: "100%"}} src="/images/Table.png" alt="placeholder" />

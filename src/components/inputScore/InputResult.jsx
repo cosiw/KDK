@@ -2,15 +2,19 @@ import React from 'react'
 import {GAMES} from '../../data/GAMES';
 import { db } from '../../config/firebase';
 import { collection, addDoc, getDocs,  query, where } from 'firebase/firestore';
-import {useEffect} from 'react';
+import {useEffect, useState} from 'react';
 import { useParams } from 'react-router-dom';
 
 function InputResult() {
-  const {groupCount,peopleCount,matchId} = useParams();
-  const playerCount = peopleCount.split("-").map(Number);
+  // const {groupCount,peopleCount,matchId} = useParams();
+  // const [matchInfoList, setMatchInfoList] = useState();
+  // const playerCount = peopleCount.split("-").map(Number);
+
+  const [groups, setGroups] = useState([]);
+
   const onSaveButtonClick = async () => {
     const gamesCollection = collection(db, 'games');
-
+    
     for (const game of GAMES) {
       for(const match of game.matches){
         try{
@@ -35,39 +39,42 @@ function InputResult() {
       }
     }
   };
+  useEffect(() => {
+    const storedGroups = localStorage.getItem('groups');
+    if (storedGroups) {
+      setGroups(JSON.parse(storedGroups)); // 저장된 데이터 파싱하여 상태 설정
+    }
+  }, []);
+  
   useEffect(() =>{
-    console.log("EFFEFCT!");
 
-    const fetchMatches = async (matchId) => {
-      try {
-        const q = query(collection(db, 'matches'), where('matchId', '==', matchId));
-        const querySnapshot = await getDocs(q);
-        querySnapshot.forEach((doc) => {
-          console.log(`fetchMatches : ${doc.id} => `, doc.data());
-        });
-      } catch (error) {
-        console.error('Error fetching matches by matchId:', error);
-      }
+    const fetchMatchInfo = async () => {
+      console.log('groups:', groups);
+      await Promise.all(groups.map(async group => {
+        console.log('group:', group);
+        const matchQuery =  query(
+          collection(db, 'games'),
+          where('number', '==', group.peopleCount));
+
+        const matchSnapshot = await getDocs(matchQuery);
+
+        const matchData = matchSnapshot.docs.map(doc => doc.data());
+        
+        
+      }));
+      
+      
     }
-
-    const fetchGames = async() => {
-      try{
-        const q = query(collection(db, 'games'), where('number', '==', playerCount[0]));
-        const querySnapshot = await getDocs(q);
-        querySnapshot.forEach((doc) => {
-          console.log(`fetchGames : ${doc.id} => `, doc.data());
-        });
-      }catch (error) {
-        console.error('Error fetching Games by people:', error);
-      }
-    }
-
-    fetchMatches(matchId);
-    fetchGames();
+    fetchMatchInfo();
    
-  }, [matchId]);
+  }, [groups]);
+
   return (
-    <button onClick={() => onSaveButtonClick()}>button</button>
+    <div>
+      <h1>스코어를 입력하세요.</h1>
+
+    </div>
+    
   )
 }
 
