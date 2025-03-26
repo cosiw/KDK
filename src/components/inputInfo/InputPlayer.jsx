@@ -53,17 +53,6 @@ function InputPlayer() {
             ))}
         </div>
     ))}
-    {/* {Array.from({length : groupCount}, (_, groupIndex) => (
-        <div key={groupIndex} className = {styles.contentWrap}>
-            <h3>{groupIndex +1} 조</h3>
-            {Array.from({length : groups[groupIndex].peopleCount}, (_, playerIndex) => (
-                <div key = {playerIndex} className={styles.nameDiv}>
-                    <p>Player{playerIndex+1}</p> 
-                    <input className={styles.input} onChange={(e) => handlePeopleChange(groupIndex, playerIndex, e.target.value)}></input>
-                </div>
-            ))}
-        </div>
-    ))} */}
         <div>
         <button onClick={() => onButtonClick()}>입력</button>        
         </div>

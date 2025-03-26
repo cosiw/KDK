@@ -24,7 +24,7 @@ function PeopleInput({setMode, groupCount}) {
         const onButtonClick = () => {
             const groups = [];
             for(let i = 0; i < groupCount; i++){
-                groups.push({name: groupName[i], peopleCount: peopleCount[i]});
+                groups.push({name: groupName[i], peopleCount: peopleCount[i], tournamentId: localStorage.getItem('tournamentId')});
             }
             localStorage.setItem('groups', JSON.stringify(groups));
             const tournamentId = localStorage.getItem('tournamentId');

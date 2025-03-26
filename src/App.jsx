@@ -25,7 +25,7 @@ export default App
 // 그룹 개수 입력
 // 각 그룹당 사람 수 입력
 
-// 사람 이름 입력 /:group/:people
+// 사람 이름 입력 /:tournamentId
 
-// 점수 입력 -> url 접근 /:group/:people/:matchId
-// 계산 결과 -> url 접근 /:group/:people/:matchId/result
+// 점수 입력 -> url 접근 /:tournamentId/match
+// 계산 결과 -> url 접근 /:tournamentId/match/result
