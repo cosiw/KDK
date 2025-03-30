@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Main from './page/Main'
 import PlayerInfo from './page/PlayerInfo'
 import InputScore from './page/InputScore'
-import GameResult from './page/GameResult'
+import TournamentResult from './page/TournamentResult'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -14,7 +14,7 @@ function App() {
       <Route path ='/' element={<Main />}/>
       <Route path='/:tournamentId' element={<PlayerInfo />}/>
       <Route path='/:tournamentId/match' element={<InputScore />}/>
-      <Route path='/:groupCount/:peopleCount/:matchId/result' element={<GameResult />}/>
+      <Route path='/:tournamentId/match/result' element={<TournamentResult />}/>
     </Routes>
   </BrowserRouter>
   )
