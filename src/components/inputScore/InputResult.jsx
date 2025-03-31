@@ -1,8 +1,8 @@
 import React from 'react'
 import { db } from '../../config/firebase';
-import { collection,doc, addDoc, setDoc, getDoc, getDocs,  query, where, orderBy } from 'firebase/firestore';
+import { collection,doc, addDoc, setDoc, getDoc, getDocs,  query, where, orderBy, deleteDoc } from 'firebase/firestore';
 import {useEffect, useState} from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import styles from './inputResult.module.css';
 
 function InputResult() {
@@ -11,8 +11,124 @@ function InputResult() {
   // const playerCount = peopleCount.split("-").map(Number);
 
   const [groups, setGroups] = useState([]);
+  const [matches, setMatches] = useState([]);
   const [loading, setLoading] = useState(true); // 로딩 상태
   const navigate = useNavigate();
+  const storageGroups = localStorage.getItem('groups');
+  const{tournamentId} = useParams();
+  
+  useEffect(() => {
+        const findData = async () => {
+          const q = query(collection(db, `tournaments/${tournamentId}/groups`));
+          const querySnapshot = await getDocs(q);
+          let data = [];
+          querySnapshot.forEach((doc) => {
+              data.push({id: doc.id, ...doc.data()});
+          });
+          return data;
+        }
+        const fetchData = async () => {
+          let storedData = localStorage.getItem('groups');
+          if(storedData) {
+              storedData = JSON.parse(storedData);
+          } else {
+              const fetchedData = await findData();
+              localStorage.setItem('groups', JSON.stringify(fetchedData));
+              storedData = fetchedData;
+          }
+          console.log("groups!!!!!! : ", storedData);
+          setGroups(storedData);
+        };
+        
+        fetchData();
+    }, [tournamentId]);
+
+    const findMatchData = async () => {
+      let data = [];
+      for(const group of groups) {
+        const matchesRef = collection(db, `tournaments/${tournamentId}/groups/${group.name}/matches`);
+        const queryMatchesSnapshot = await getDocs(matchesRef);
+
+        for(const doc of queryMatchesSnapshot.docs) {
+          data.push({id: doc.id, ...doc.data()});
+        };
+      }
+      return data;
+
+    }
+
+    const fetchMatchInfo = async () => {
+      try{
+        const fetchedData = await findMatchData();
+        console.log("storageGroups : ", storageGroups);
+        console.log("fetchedData : ", fetchedData);
+        if(storageGroups.length > 0 && fetchedData.length == 0){
+          const updatedGroups = await Promise.all(
+            groups.map(async (group) => {
+            const matchQuery =  query(
+              collection(db, 'games'),
+              where('number', '==', group.peopleCount),
+              orderBy('game')
+            );
+    
+            const matchSnapshot = await getDocs(matchQuery);
+            const matchData = matchSnapshot.docs.map(doc => doc.data());
+            console.log("matchData : ", group);
+            const updatedMatches = matchData.map(data => {
+              return {
+                ...data,
+                team1N: data.team1.map((index) => group.people[index - 1]), // 사람 이름으로 변경
+                team2N: data.team2.map((index) => group.people[index - 1]),
+                groupName: group.name,
+                score: [0, 0],
+              }
+            });
+            return {
+              ...group,
+              matches: updatedMatches
+            }
+          })
+        );
+          setGroups(updatedGroups);
+        } else {
+          console.log("fetchedData : ", fetchedData);
+          console.log("groups1111 : ", groups);
+          const groupsMappingData = groups.map((group) => {
+            const matches = fetchedData.filter(match => match.groupName === group.name).map(match => {
+              return {
+                game: match.game,
+                team1: match.team1.map((index) => group.people[index - 1]), // 사람 이름으로 변경
+                team2: match.team2.map((index) => group.people[index - 1]),
+                team1N : match.team1.map((index) => group.people[index - 1]),
+                team2N : match.team2.map((index) => group.people[index - 1]),
+                score: match.score,
+              }
+            });
+            return {
+              ...group,
+              matches: matches
+            }
+          });
+          console.log("mappingData : " ,groupsMappingData);
+          setGroups(groupsMappingData);
+        }
+
+      setLoading(false);
+      }catch(error){
+        console.error('매치 정보를 불러오는데 실패했습니다.', error);
+      }
+      
+    }
+  useEffect(() =>{
+    if(groups.length === 0) return;
+    fetchMatchInfo();
+
+  }, [groups.length]);
+
+  useEffect(() => {
+    console.log("groups updated:", groups);
+  }, [groups]);
+
   const handleScoreChange = (groupIndex, matchIndex, scoreIndex, value) => {
     setGroups((prevGroups) => {
       const newGroups = [...prevGroups];
@@ -20,40 +136,27 @@ function InputResult() {
       return newGroups;
     });
 
-    console.log(groups);
   };
 
   const onSaveButtonClick = async () => {
-    const tournamentId = localStorage.getItem('tournamentId');
-    const groupCount = localStorage.getItem('groupCount');
-  
     try{
-      const tournamentDocRef = doc(db, "tournaments", tournamentId);
-      await setDoc(tournamentDocRef, {
-        tournamentId: tournamentId,
-        groupCount : groupCount,
-      });
       
       groups.forEach(async (group) => {
         const groupDocId = group.name;
         const groupDocRef = doc(db, `tournaments/${tournamentId}/groups`, groupDocId);
-        console.log("groupDocId : ", groupDocId);
-          await setDoc(groupDocRef, {
-            name: group.name,
-            peopleCount: group.peopleCount,
-            people: group.people,
-          }, {merge: true});
 
         group.matches.forEach(async (match) => {
           const matchGameId = String(match.game);
           const matchDocId = groupDocId + matchGameId;
-          const matchDocRef = doc(db, `tournaments/${tournamentId}/matches`, matchDocId);
+          const matchDocRef = doc(db, `tournaments/${tournamentId}/groups/${groupDocId}/matches`, matchDocId);
           console.log("matchDocId : ",matchDocId);
 
           await setDoc(matchDocRef, {
             game: match.game,
             team1: match.team1,
+            team1N : match.team1N,
             team2: match.team2,
+            team2N : match.team2N,
             score: match.score,
             groupName: group.name,
           }, {merge: true});
@@ -66,180 +169,156 @@ function InputResult() {
     }
     
   }
+  
 
-  const onResultButtonClick = () => {
-    const tournamentId = localStorage.getItem('tournamentId');
+  const onResultButtonClick = async () => {
 
-    groups.map(group => {
-      
-      let resultBoard = group.people.map(player => {
-        return{
-        groupName : group.name,
-        player : player,
-        score : 0,
-        win : 0,
-        lose : 0,
-        draw : 0,
-        rank : 0
-        }
-        
-      });
+  const deleteResultsCollection = async() => { 
+    try{
+      for(const group of groups) {
+        const resultsRef = collection(db, `tournaments/${tournamentId}/groups/${group.name}/results`);
+        const deleteQuerySnapshot = await getDocs(resultsRef);
+        console.log(deleteQuerySnapshot);
 
-      console.log("resultBoard : ", resultBoard);
-
-      group?.matches?.map(match => {
-        
-        if(match.score &&
-          match.score.length > 1 &&
-          parseInt(match?.score[0]) > parseInt(match?.score[1])){ 
-            resultBoard.forEach(playerResult => {
-              if (playerResult.player.includes(match.team1[0])) {
-                playerResult.score = playerResult.score +  match.score[0];
-                playerResult.win = playerResult.win + 1;
-              }
-              if (playerResult.player.includes(match.team1[1])) {
-                playerResult.score = playerResult.score + match.score[0];
-                playerResult.win = playerResult.win + 1;
-              }
-              if (playerResult.player.includes(match.team2[0])) {
-                playerResult.score = playerResult.score + match.score[1];
-                playerResult.lose = playerResult.lose + 1;
-              }
-              if (playerResult.player.includes(match.team2[1])) {
-                playerResult.score = playerResult.score + match.score[1];
-                playerResult.lose = playerResult.lose + 1;
-              }
-            });
-        }else if(match.score &&
-          match.score.length > 1 &&
-          parseInt(match?.score[0]) < parseInt(match?.score[1])){
-            resultBoard.forEach(playerResult => {
-              if (playerResult.player.includes(match.team1[0])) {
-                playerResult.score = playerResult.score +  match.score[0];
-                playerResult.lose = playerResult.lose + 1;
-              }
-              if (playerResult.player.includes(match.team1[1])) {
-                playerResult.score = playerResult.score + match.score[0];
-                playerResult.lose = playerResult.lose + 1;
-              }
-              if (playerResult.player.includes(match.team2[0])) {
-                playerResult.score = playerResult.score + match.score[1];
-                playerResult.win = playerResult.win + 1;
-              }
-              if (playerResult.player.includes(match.team2[1])) {
-                playerResult.score = playerResult.score + match.score[1];
-                playerResult.win = playerResult.win + 1;
-              }
-            });
-          }
-          else{
-            resultBoard.forEach(playerResult => {
-              if (playerResult.player.includes(match.team1[0])) {
-                playerResult.score = playerResult.score +  match.score[0];
-                playerResult.draw = playerResult.draw + 1;
-              }
-              if (playerResult.player.includes(match.team1[1])) {
-                playerResult.score = playerResult.score + match.score[0];
-                playerResult.draw = playerResult.draw + 1;
-              }
-              if (playerResult.player.includes(match.team2[0])) {
-                playerResult.score = playerResult.score + match.score[1];
-                playerResult.draw = playerResult.draw + 1;
-              }
-              if (playerResult.player.includes(match.team2[1])) {
-                playerResult.score = playerResult.score + match.score[1];
-                playerResult.draw = playerResult.draw + 1;
-              }
-            });
-          }
-      })
-
-      resultBoard.sort((a, b) => {
-        if (a.win !== b.win) {
-          return b.win - a.win; // win 기준 내림차순
-        }
-        return b.score - a.score; // win이 같을 경우 score 기준 내림차순
-      });
-
-      resultBoard = resultBoard.map((playerResult, index) => ({
-        ...playerResult,
-        rank: index + 1 // 인덱스는 0부터 시작하므로 1을 더해 순위를 매깁니다.
-      }));
-
-      try{
-
-        resultBoard.forEach(async (result) => {
-          const resultDocId = result.groupName + result.player;
-          const resultDocRef = doc(db, `tournaments/${tournamentId}/results`, resultDocId);
-          await setDoc(resultDocRef, {
-            groupName : result.groupName,
-              player: result.player,
-              score: result.score,
-              win: result.win,
-              lose: result.lose,
-              draw: result.draw,
-              rank: result.rank
-          }, {merge: true});
-          
-        })
-      }catch(error){
-        console.error('결과를 저장하는 데 실패하였습니다.', error);
+        for(const doc of deleteQuerySnapshot.docs) {
+          console.log("문서 ID:", doc.id);
+          await deleteDoc(doc.ref);
+        };
       }
+      console.log("문서 삭제 완료:", tournamentId);
+    }catch (error) {
+        console.error("문서 삭제 실패:", error);
+      }
+    }
 
-    })
-    //navigate(`/${tournamentId}/match/result`)
+    const saveResult = () => {
+      groups.map(group => {
+      
+        let resultBoard = group.people.map(player => {
+          return{
+          groupName : group.name,
+          player : player,
+          score : 0,
+          win : 0,
+          lose : 0,
+          draw : 0,
+          rank : 0
+          }
+          
+        });
+  
+        group?.matches?.map(match => {
+          console.log("match : ", match);
+          if(match.score &&
+            match.score.length > 1 &&
+            parseInt(match?.score[0]) > parseInt(match?.score[1])){ 
+              resultBoard.forEach(playerResult => {
+                if (playerResult.player.includes(match.team1[0])) {
+                  playerResult.score = playerResult.score +  match.score[0];
+                  playerResult.win = playerResult.win + 1;
+                }
+                if (playerResult.player.includes(match.team1[1])) {
+                  playerResult.score = playerResult.score + match.score[0];
+                  playerResult.win = playerResult.win + 1;
+                }
+                if (playerResult.player.includes(match.team2[0])) {
+                  playerResult.score = playerResult.score + match.score[1];
+                  playerResult.lose = playerResult.lose + 1;
+                }
+                if (playerResult.player.includes(match.team2[1])) {
+                  playerResult.score = playerResult.score + match.score[1];
+                  playerResult.lose = playerResult.lose + 1;
+                }
+              });
+          }else if(match.score &&
+            match.score.length > 1 &&
+            parseInt(match?.score[0]) < parseInt(match?.score[1])){
+              resultBoard.forEach(playerResult => {
+                if (playerResult.player.includes(match.team1[0])) {
+                  playerResult.score = playerResult.score +  match.score[0];
+                  playerResult.lose = playerResult.lose + 1;
+                }
+                if (playerResult.player.includes(match.team1[1])) {
+                  playerResult.score = playerResult.score + match.score[0];
+                  playerResult.lose = playerResult.lose + 1;
+                }
+                if (playerResult.player.includes(match.team2[0])) {
+                  playerResult.score = playerResult.score + match.score[1];
+                  playerResult.win = playerResult.win + 1;
+                }
+                if (playerResult.player.includes(match.team2[1])) {
+                  playerResult.score = playerResult.score + match.score[1];
+                  playerResult.win = playerResult.win + 1;
+                }
+              });
+            }
+            else{
+              resultBoard.forEach(playerResult => {
+                if (playerResult.player.includes(match.team1[0])) {
+                  playerResult.score = playerResult.score +  match.score[0];
+                  playerResult.draw = playerResult.draw + 1;
+                }
+                if (playerResult.player.includes(match.team1[1])) {
+                  playerResult.score = playerResult.score + match.score[0];
+                  playerResult.draw = playerResult.draw + 1;
+                }
+                if (playerResult.player.includes(match.team2[0])) {
+                  playerResult.score = playerResult.score + match.score[1];
+                  playerResult.draw = playerResult.draw + 1;
+                }
+                if (playerResult.player.includes(match.team2[1])) {
+                  playerResult.score = playerResult.score + match.score[1];
+                  playerResult.draw = playerResult.draw + 1;
+                }
+              });
+            }
+        })
+  
+        resultBoard.sort((a, b) => {
+          if (a.win !== b.win) {
+            return b.win - a.win; // win 기준 내림차순
+          }
+          return b.score - a.score; // win이 같을 경우 score 기준 내림차순
+        });
+  
+        resultBoard = resultBoard.map((playerResult, index) => ({
+          ...playerResult,
+          rank: index + 1 // 인덱스는 0부터 시작하므로 1을 더해 순위를 매깁니다.
+        }));
+  
+        try{
+          
+          resultBoard.forEach(async (result) => {
+            
+            const resultDocId = result.groupName + result.player;
+            const groupDocId = result.groupName;
+            const resultDocRef = doc(db, `tournaments/${tournamentId}/groups/${groupDocId}/results`, resultDocId);
+            await setDoc(resultDocRef, {
+              groupName : result.groupName,
+                player: result.player,
+                score: result.score,
+                win: result.win,
+                lose: result.lose,
+                draw: result.draw,
+                rank: result.rank
+            }, {merge: true});
+            
+          })
+        }catch(error){
+          console.error('결과를 저장하는 데 실패하였습니다.', error);
+        }
+  
+  
+      })
+    } 
+
+    await deleteResultsCollection();
+    await onSaveButtonClick();
+    saveResult();
+    navigate(`/${tournamentId}/match/result`)
     // player : "aa", score : 20, win : 3, lose : 1, draw : 1, rank : 1
   }
 
-
-  useEffect(() => {
-    const storedGroups = localStorage.getItem('groups');
-    if (storedGroups) {
-      setGroups(JSON.parse(storedGroups)); // 저장된 데이터 파싱하여 상태 설정
-    }
-  }, []);
-  
-  useEffect(() =>{
-    if(groups.length === 0) return;
-
-    const fetchMatchInfo = async () => {
-      try{
-        const updatedGroups = await Promise.all(
-          groups.map(async (group) => {
-          const matchQuery =  query(
-            collection(db, 'games'),
-            where('number', '==', group.peopleCount),
-            orderBy('game')
-          );
-  
-          const matchSnapshot = await getDocs(matchQuery);
-          const matchData = matchSnapshot.docs.map(doc => doc.data());
-          
-          const updatedMatches = matchData.map(data => {
-            return {
-              ...data,
-              team1: data.team1.map((index) => group.people[index - 1]), // 사람 이름으로 변경
-              team2: data.team2.map((index) => group.people[index - 1]),
-              groupName: group.name,
-              score: [0, 0],
-            }
-          });
-          
-          return {
-            ...group,
-            matches: updatedMatches
-          }
-        })
-      );
-      setGroups(updatedGroups);
-      setLoading(false);
-      }catch(error){
-        console.error('매치 정보를 불러오는데 실패했습니다.', error);
-      }
-      
-    }
-    fetchMatchInfo();
-  }, [groups.length]);
 
 
   if(loading){
@@ -256,7 +335,7 @@ function InputResult() {
               <span>{match.game}게임</span>
             </div>
             <div className={styles.teams}>
-              <span>{match.team1.join(", ")}</span> vs <span>{match.team2.join(", ")}</span>
+              <span>{match.team1N.join(", ")}</span> vs <span>{match.team2N.join(", ")}</span>
             </div>
             <div className={styles.scoreInputs}>
               <input
@@ -277,8 +356,10 @@ function InputResult() {
         ))}
       </div>
     ))}
-    <button onClick={onSaveButtonClick}>저장하기</button>
-    <button onClick={onResultButtonClick}>결과보기</button>
+    <div className={styles.buttonDiv}>
+      <button className = {styles.saveButton} onClick={onSaveButtonClick}>저장하기</button>
+      <button className = {styles.resultButton}onClick={onResultButtonClick}>결과보기</button>
+    </div>
   </div>
 );
 }

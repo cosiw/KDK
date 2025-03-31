@@ -1,3 +1,18 @@
+.container {
+    width: 100%;
+    margin: auto;
+    text-align: center;
+}
+
+.group {
+    margin-bottom: 30px;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  }
+
+
 .contentWrap{
     display: flex;
     flex-direction: column;
@@ -16,15 +31,36 @@
 
 
 .nameDiv {
-    display: flex; /* 가로 정렬 */
-    align-items: center; /* 세로 가운데 정렬 */
-    gap: 10px; /* p 태그와 input 사이 간격 */
-    margin-bottom: 5px; /* 아래쪽 간격 */
+    display: flex; 
+    align-items: center;
+    justify-content: center;
+    gap: 20px; 
+    margin-bottom: 5px; 
+    
 }
 
 .input {
     padding: 5px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    width: 150px; /* 입력창 너비 */
+    width: 150px; 
+} 
+
+.inputButton{
+    width: 30%;
+    height: 3.0rem;
+    margin: 0 5%;
+    cursor: pointer;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border-radius: 0.5rem;
+    border: solid 2px #795548;
+    background-color: white; 
+    color : #795548;
+}
+
+.inputButton:hover{
+    background-color: #795548;
+    color: white;
+    transition: 0.3s;
 }

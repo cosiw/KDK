@@ -5,8 +5,9 @@ import PlayerInfo from './page/PlayerInfo'
 import InputScore from './page/InputScore'
 import TournamentResult from './page/TournamentResult'
 
+export const base_url = "http://localhost:5173";
 function App() {
-  const [count, setCount] = useState(0)
+  
 
   return (
     <BrowserRouter> 

@@ -16,6 +16,10 @@ function MainInput({setMode}) {
 
     const onButtonClick = () => {
       const tournamentId = uuidv4();
+      if(groupCount < 1 || groupCount > 10){
+        alert("조는 1 ~ 10개만 가능합니다.");
+        return;
+    }
       localStorage.setItem('tournamentId', tournamentId);
       localStorage.setItem('groupCount', groupCount);
       setMode('people');
@@ -26,10 +30,10 @@ function MainInput({setMode}) {
       <form>
       <div className = {styles.contentWrap}>
             <div className={styles.inputTitle}>
-                조
+                
             </div>
             <div className={styles.inputWrap}>
-                <input className={styles.input} onChange={handleGroupChange}></input>
+                <input className={styles.input} type="number" onChange={handleGroupChange}></input>
             </div>
         </div>
       </form>
