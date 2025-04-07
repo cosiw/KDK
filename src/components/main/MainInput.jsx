@@ -16,6 +16,10 @@ function MainInput({setMode}) {
 
     const onButtonClick = () => {
       const tournamentId = uuidv4();
+      if(groupCount === 0){
+        alert("조를 입력해주세요.");
+        return;
+      }
       if(groupCount < 1 || groupCount > 10){
         alert("조는 1 ~ 10개만 가능합니다.");
         return;

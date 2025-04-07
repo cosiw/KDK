@@ -8,16 +8,23 @@ function GameResult() {
 
   const [groups, setGroups] = useState({});
   const{tournamentId} = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const groups = [];
     const results = [];
+    
     const findData = async () => {
       const q = query(collection(db, `tournaments/${tournamentId}/groups`));
       const querySnapshot = await getDocs(q);
+      if(querySnapshot.empty){
+        alert("해당 대회가 없습니다.")
+        navigate('/');
+      } 
+
       for(const groupDoc of querySnapshot.docs){
         const groupName = groupDoc.id;
-        console.log(groupName);
+        
         const resultRef = collection(db, `tournaments/${tournamentId}/groups/${groupName}/results`);
         const resultSnapshot = await getDocs(resultRef);
         groups[groupName] = resultSnapshot.docs.map((doc) => ({id: doc.id, ...doc.data()}));
@@ -25,7 +32,7 @@ function GameResult() {
       }
 
       setGroups(groups);
-      console.log("groups : ", groups);
+      
       
     }
     findData();

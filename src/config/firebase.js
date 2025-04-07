@@ -7,13 +7,13 @@ import { getFirestore } from 'firebase/firestore';
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyBGpP4D9KxqqsxbQ14ZZefBV_86CFSQXOg",
-  authDomain: "tennisinfo-3aa64.firebaseapp.com",
-  projectId: "tennisinfo-3aa64",
-  storageBucket: "tennisinfo-3aa64.firebasestorage.app",
-  messagingSenderId: "170370847309",
-  appId: "1:170370847309:web:5be314a9d358b0af21c204",
-  measurementId: "G-TK6Q9SB7FR"
+  apiKey: import.meta.env.VITE_API_KEY,
+  authDomain: import.meta.env.VITE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_APP_ID,
+  measurementId: import.meta.env.VITE_MEASUREMENT_ID
 }
 // firebaseConfig 정보로 firebase 시작
 const app = initializeApp(firebaseConfig)

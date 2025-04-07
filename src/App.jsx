@@ -4,8 +4,9 @@ import Main from './page/Main'
 import PlayerInfo from './page/PlayerInfo'
 import InputScore from './page/InputScore'
 import TournamentResult from './page/TournamentResult'
+import Privacy from './components/main/Privacy'
 
-export const base_url = "http://localhost:5173";
+export const base_url = import.meta.env.VITE_BASE_URL;
 function App() {
   
 
@@ -16,6 +17,8 @@ function App() {
       <Route path='/:tournamentId' element={<PlayerInfo />}/>
       <Route path='/:tournamentId/match' element={<InputScore />}/>
       <Route path='/:tournamentId/match/result' element={<TournamentResult />}/>
+
+      <Route path="/privacy" element= {<Privacy />} />
     </Routes>
   </BrowserRouter>
   )

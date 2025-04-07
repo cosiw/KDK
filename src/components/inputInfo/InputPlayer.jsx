@@ -52,11 +52,8 @@ function InputPlayer() {
             querySnapshot.forEach((doc) => {
                 data.push({id: doc.id, ...doc.data()});
             });
-            console.log("data :", data);
             return data;
         }
-
-        console.log(findData);
 
         const fetchData = async () => {
             let storedData = localStorage.getItem('groups');
@@ -67,7 +64,6 @@ function InputPlayer() {
                 localStorage.setItem('groups', JSON.stringify(fetchedData));
                 storedData = fetchedData;
             }
-            console.log(storedData);
             setGroups(storedData);
         };
         
@@ -98,7 +94,7 @@ function InputPlayer() {
                     <p>{playerIndex+1}번</p> 
                     <input 
                         className={styles.input}
-                        value = {group.people ? group.people[playerIndex] : ""}
+                        value = {group.people && group.people[playerIndex] !== undefined ? group.people[playerIndex] : ""}
                         onChange={(e) => handlePeopleChange(groupIndex, playerIndex, e.target.value)}></input>
                 </div>
             ))}

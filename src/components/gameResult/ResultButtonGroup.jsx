@@ -13,7 +13,13 @@ function ResultButtonGroup(){
     }
     return(
         <div className={styles.mainDiv}>
+            <div className={styles.titleDiv}>
+                <h3 >링크를 복사하여 결과를 공유해주세요!</h3>
+            </div>
             <div className={styles.upperDiv}>
+                <button className={styles.button} onClick={() => {
+                    navigate(`/${tournamentId}/match`);
+                }}><RedoOutlined />&nbsp;뒤로가기</button>
                 <button className={styles.button} onClick={() => {
                     copy(`${base_url}/${tournamentId}/match/result`);
                     alert("링크가 복사되었습니다.");

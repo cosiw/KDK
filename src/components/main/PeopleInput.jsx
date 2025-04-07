@@ -6,7 +6,7 @@ function PeopleInput({setMode, groupCount}) {
     
         // 참가자 수를 저장할 상태 (배열)
         const [peopleCount, setPeopleCount] = useState(Array(groupCount).fill(0));
-        const [groupName, setGroupName] = useState(Array(groupCount).fill(0));
+        const [groupName, setGroupName] = useState(Array(groupCount).fill(""));
         const navigate = useNavigate();
         // 조 개수 입력 값 업데이트
         const handlePeopleChange = (index, value) => {
@@ -18,7 +18,7 @@ function PeopleInput({setMode, groupCount}) {
 
         const handleGroupNameChange = (index, value) => {
             const newGroup = [... groupName];
-            newGroup[index] = value;;
+            newGroup[index] = value;
             setGroupName(newGroup);
         }
 
@@ -26,8 +26,12 @@ function PeopleInput({setMode, groupCount}) {
             const groups = [];
             
             for(let i = 0; i < groupCount; i++){
+                if(groupName[i] === "" || groupName[i] === undefined) {
+                    alert("조 이름을 입력해주세요.");
+                    return;
+                }
                 if(peopleCount[i] < 5 || peopleCount[i] > 10){
-                    alert("조당 인원수는 5 ~ 10명만 가능합니다.");
+                    alert("조당 참가자 수는 5 ~ 10명만 가능합니다.");
                     return;
                 }
                 groups.push({name: groupName[i], peopleCount: peopleCount[i], tournamentId: localStorage.getItem('tournamentId')});

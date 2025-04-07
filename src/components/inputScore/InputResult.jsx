@@ -18,9 +18,14 @@ function InputResult() {
   const{tournamentId} = useParams();
   
   useEffect(() => {
+        
         const findData = async () => {
           const q = query(collection(db, `tournaments/${tournamentId}/groups`));
           const querySnapshot = await getDocs(q);
+          if(querySnapshot.empty){
+            alert("해당 대회가 없습니다.")
+            navigate('/');
+        }
           let data = [];
           querySnapshot.forEach((doc) => {
               data.push({id: doc.id, ...doc.data()});
@@ -36,7 +41,7 @@ function InputResult() {
               localStorage.setItem('groups', JSON.stringify(fetchedData));
               storedData = fetchedData;
           }
-          console.log("groups!!!!!! : ", storedData);
+          
           setGroups(storedData);
         };
         
@@ -60,8 +65,6 @@ function InputResult() {
     const fetchMatchInfo = async () => {
       try{
         const fetchedData = await findMatchData();
-        console.log("storageGroups : ", storageGroups);
-        console.log("fetchedData : ", fetchedData);
         if(storageGroups.length > 0 && fetchedData.length == 0){
           const updatedGroups = await Promise.all(
             groups.map(async (group) => {
@@ -73,7 +76,7 @@ function InputResult() {
     
             const matchSnapshot = await getDocs(matchQuery);
             const matchData = matchSnapshot.docs.map(doc => doc.data());
-            console.log("matchData : ", group);
+            
             const updatedMatches = matchData.map(data => {
               return {
                 ...data,
@@ -91,16 +94,16 @@ function InputResult() {
         );
           setGroups(updatedGroups);
         } else {
-          console.log("fetchedData : ", fetchedData);
-          console.log("groups1111 : ", groups);
+          
           const groupsMappingData = groups.map((group) => {
             const matches = fetchedData.filter(match => match.groupName === group.name).map(match => {
+              
               return {
                 game: match.game,
-                team1: match.team1.map((index) => group.people[index - 1]), // 사람 이름으로 변경
-                team2: match.team2.map((index) => group.people[index - 1]),
-                team1N : match.team1.map((index) => group.people[index - 1]),
-                team2N : match.team2.map((index) => group.people[index - 1]),
+                team1: match.team1,
+                team2: match.team2,
+                team1N : match.team1.map((index) => group.people[index - 1]), // 사람 이름으로 변경
+                team2N : match.team2.map((index) => group.people[index - 1]), // 사람 이름으로 변경
                 score: match.score,
               }
             });
@@ -109,7 +112,7 @@ function InputResult() {
               matches: matches
             }
           });
-          console.log("mappingData : " ,groupsMappingData);
+          
           setGroups(groupsMappingData);
         }
 
@@ -126,7 +129,7 @@ function InputResult() {
   }, [groups.length]);
 
   useEffect(() => {
-    console.log("groups updated:", groups);
+    
   }, [groups]);
 
   const handleScoreChange = (groupIndex, matchIndex, scoreIndex, value) => {
@@ -149,7 +152,7 @@ function InputResult() {
           const matchGameId = String(match.game);
           const matchDocId = groupDocId + matchGameId;
           const matchDocRef = doc(db, `tournaments/${tournamentId}/groups/${groupDocId}/matches`, matchDocId);
-          console.log("matchDocId : ",matchDocId);
+          
 
           await setDoc(matchDocRef, {
             game: match.game,
@@ -164,13 +167,16 @@ function InputResult() {
         });
       });
 
+      alert("저장되었습니다.");
     }catch(error){
       console.error('결과를 저장하는데 실패했습니다.', error);
     }
     
   }
   
-
+  const onBackButtonClick = () => {
+    navigate(`/${tournamentId}`);
+  }
   const onResultButtonClick = async () => {
 
   const deleteResultsCollection = async() => { 
@@ -178,10 +184,10 @@ function InputResult() {
       for(const group of groups) {
         const resultsRef = collection(db, `tournaments/${tournamentId}/groups/${group.name}/results`);
         const deleteQuerySnapshot = await getDocs(resultsRef);
-        console.log(deleteQuerySnapshot);
+        
 
         for(const doc of deleteQuerySnapshot.docs) {
-          console.log("문서 ID:", doc.id);
+          
           await deleteDoc(doc.ref);
         };
       }
@@ -208,24 +214,23 @@ function InputResult() {
         });
   
         group?.matches?.map(match => {
-          console.log("match : ", match);
           if(match.score &&
             match.score.length > 1 &&
             parseInt(match?.score[0]) > parseInt(match?.score[1])){ 
               resultBoard.forEach(playerResult => {
-                if (playerResult.player.includes(match.team1[0])) {
+                if (playerResult.player.includes(match.team1N[0])) {
                   playerResult.score = playerResult.score +  match.score[0];
                   playerResult.win = playerResult.win + 1;
                 }
-                if (playerResult.player.includes(match.team1[1])) {
+                if (playerResult.player.includes(match.team1N[1])) {
                   playerResult.score = playerResult.score + match.score[0];
                   playerResult.win = playerResult.win + 1;
                 }
-                if (playerResult.player.includes(match.team2[0])) {
+                if (playerResult.player.includes(match.team2N[0])) {
                   playerResult.score = playerResult.score + match.score[1];
                   playerResult.lose = playerResult.lose + 1;
                 }
-                if (playerResult.player.includes(match.team2[1])) {
+                if (playerResult.player.includes(match.team2N[1])) {
                   playerResult.score = playerResult.score + match.score[1];
                   playerResult.lose = playerResult.lose + 1;
                 }
@@ -234,19 +239,19 @@ function InputResult() {
             match.score.length > 1 &&
             parseInt(match?.score[0]) < parseInt(match?.score[1])){
               resultBoard.forEach(playerResult => {
-                if (playerResult.player.includes(match.team1[0])) {
+                if (playerResult.player.includes(match.team1N[0])) {
                   playerResult.score = playerResult.score +  match.score[0];
                   playerResult.lose = playerResult.lose + 1;
                 }
-                if (playerResult.player.includes(match.team1[1])) {
+                if (playerResult.player.includes(match.team1N[1])) {
                   playerResult.score = playerResult.score + match.score[0];
                   playerResult.lose = playerResult.lose + 1;
                 }
-                if (playerResult.player.includes(match.team2[0])) {
+                if (playerResult.player.includes(match.team2N[0])) {
                   playerResult.score = playerResult.score + match.score[1];
                   playerResult.win = playerResult.win + 1;
                 }
-                if (playerResult.player.includes(match.team2[1])) {
+                if (playerResult.player.includes(match.team2N[1])) {
                   playerResult.score = playerResult.score + match.score[1];
                   playerResult.win = playerResult.win + 1;
                 }
@@ -254,19 +259,19 @@ function InputResult() {
             }
             else{
               resultBoard.forEach(playerResult => {
-                if (playerResult.player.includes(match.team1[0])) {
+                if (playerResult.player.includes(match.team1N[0])) {
                   playerResult.score = playerResult.score +  match.score[0];
                   playerResult.draw = playerResult.draw + 1;
                 }
-                if (playerResult.player.includes(match.team1[1])) {
+                if (playerResult.player.includes(match.team1N[1])) {
                   playerResult.score = playerResult.score + match.score[0];
                   playerResult.draw = playerResult.draw + 1;
                 }
-                if (playerResult.player.includes(match.team2[0])) {
+                if (playerResult.player.includes(match.team2N[0])) {
                   playerResult.score = playerResult.score + match.score[1];
                   playerResult.draw = playerResult.draw + 1;
                 }
-                if (playerResult.player.includes(match.team2[1])) {
+                if (playerResult.player.includes(match.team2N[1])) {
                   playerResult.score = playerResult.score + match.score[1];
                   playerResult.draw = playerResult.draw + 1;
                 }
@@ -335,21 +340,39 @@ function InputResult() {
               <span>{match.game}게임</span>
             </div>
             <div className={styles.teams}>
-              <span>{match.team1N.join(", ")}</span> vs <span>{match.team2N.join(", ")}</span>
+              {/* <span>{match.team1N.join(", ")}</span> vs <span>{match.team2N.join(", ")}</span> */}
+              <span>{match.team1N[0]}({match.team1[0]}) {match.team1N[1]}({match.team1[1]})</span> vs 
+              <span>{match.team2N[0]}({match.team2[0]}) {match.team2N[1]}({match.team2[1]})</span>
             </div>
             <div className={styles.scoreInputs}>
               <input
                 type="number"
                 min="0"
-                value={match.score[0]}
-                onChange={(e) => handleScoreChange(groupIndex, matchIndex, 0, e.target.value)}
+                value={match.score[0] === 0 ? '0' : match.score[0]}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  const number = value === '' ? 0 : Number(value);  // 비어 있으면 0으로
+                  handleScoreChange(groupIndex, matchIndex, 0, number);
+                }}
+                onBlur={(e) => {
+                  const value = e.target.value === '' ? 0: Number(e.target.value);
+                  handleScoreChange(groupIndex, matchIndex, 0, value);
+                }}
               />
               :
               <input
                 type="number"
                 min="0"
-                value={match.score[1]}
-                onChange={(e) => handleScoreChange(groupIndex, matchIndex, 1, e.target.value)}
+                value={match.score[1] === 0 ? "" : match.score[1]}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  const number = value === '' ? 0 : Number(value);  // 비어 있으면 0으로
+                  handleScoreChange(groupIndex, matchIndex, 1, number);
+                }}
+                onBlur={(e) => {
+                  const value = e.target.value === '' ? 0: Number(e.target.value);
+                  handleScoreChange(groupIndex, matchIndex, 1, value);
+                }}
               />
             </div>
           </div>
@@ -357,6 +380,7 @@ function InputResult() {
       </div>
     ))}
     <div className={styles.buttonDiv}>
+      <button className = {styles.backButton} onClick={onBackButtonClick}>뒤로가기</button>
       <button className = {styles.saveButton} onClick={onSaveButtonClick}>저장하기</button>
       <button className = {styles.resultButton}onClick={onResultButtonClick}>결과보기</button>
     </div>
