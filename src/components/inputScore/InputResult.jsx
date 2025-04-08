@@ -4,6 +4,7 @@ import { collection,doc, addDoc, setDoc, getDoc, getDocs,  query, where, orderBy
 import {useEffect, useState} from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import styles from './inputResult.module.css';
+import ScoreInput from './ScoreInput';
 
 function InputResult() {
   // const {groupCount,peopleCount,matchId} = useParams();
@@ -345,35 +346,20 @@ function InputResult() {
               <span>{match.team2N[0]}({match.team2[0]}) {match.team2N[1]}({match.team2[1]})</span>
             </div>
             <div className={styles.scoreInputs}>
-              <input
+            <ScoreInput
                 type="number"
                 min="0"
-                value={match.score[0] === 0 ? '0' : match.score[0]}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  const number = value === '' ? 0 : Number(value);  // 비어 있으면 0으로
-                  handleScoreChange(groupIndex, matchIndex, 0, number);
-                }}
-                onBlur={(e) => {
-                  const value = e.target.value === '' ? 0: Number(e.target.value);
-                  handleScoreChange(groupIndex, matchIndex, 0, value);
-                }}
-              />
+                max="6"
+                value={match.score[0]}
+                onChange={(newScore) => handleScoreChange(groupIndex, matchIndex, 0, newScore)}
+                />
               :
-              <input
-                type="number"
-                min="0"
-                value={match.score[1] === 0 ? "" : match.score[1]}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  const number = value === '' ? 0 : Number(value);  // 비어 있으면 0으로
-                  handleScoreChange(groupIndex, matchIndex, 1, number);
-                }}
-                onBlur={(e) => {
-                  const value = e.target.value === '' ? 0: Number(e.target.value);
-                  handleScoreChange(groupIndex, matchIndex, 1, value);
-                }}
-              />
+              <ScoreInput
+                min= '0'
+                max= "6"
+                value={match.score[1]}
+                onChange={(newScore) => handleScoreChange(groupIndex, matchIndex, 1, newScore)}
+                />
             </div>
           </div>
         ))}
