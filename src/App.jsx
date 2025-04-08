@@ -5,10 +5,24 @@ import PlayerInfo from './page/PlayerInfo'
 import InputScore from './page/InputScore'
 import TournamentResult from './page/TournamentResult'
 import Privacy from './components/main/Privacy'
+import ReactGA4 from 'react-ga4'
+import { useEffect } from 'react'
+
 
 export const base_url = import.meta.env.VITE_BASE_URL;
 function App() {
-  
+  useEffect(() => {
+    ReactGA4.initialize(
+      [
+        {
+          trackingId: 'G-BVKP7NB8Z6',
+          gaOptions: {
+            siteSpeedSampleRate: 100
+          }
+        }
+      ]
+    )
+  }, [])
 
   return (
     <BrowserRouter> 
