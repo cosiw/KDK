@@ -1,6 +1,6 @@
 import React from 'react';
 import {useState} from 'react';
-import styles from './MainInput.module.css';
+import styles from './mainInput.module.css';
 import {useNavigate} from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 
