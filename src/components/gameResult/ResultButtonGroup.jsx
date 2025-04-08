@@ -3,6 +3,8 @@ import { useCopyToClipboard } from '@uidotdev/usehooks';
 import { LinkOutlined , RedoOutlined, HomeOutlined} from '@ant-design/icons';
 import { base_url } from '../../App';
 import styles from './resultButtonGroup.module.css';
+import { eventSenderGA } from '../../tools/tools';
+
 function ResultButtonGroup(){
     const navigate = useNavigate();
     const [copiedText, copy] = useCopyToClipboard();
@@ -23,6 +25,7 @@ function ResultButtonGroup(){
                 <button className={styles.button} onClick={() => {
                     copy(`${base_url}/${tournamentId}/match/result`);
                     alert("링크가 복사되었습니다.");
+                    eventSenderGA("Copy", "Copy Url Button", "gameResult");
                 }}><LinkOutlined />&nbsp;
                     링크복사
                 </button>

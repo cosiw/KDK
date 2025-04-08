@@ -5,7 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useState } from 'react';
 import { db } from '../../config/firebase';
 import { collection,doc, setDoc, getDocs,  query, where, orderBy } from 'firebase/firestore';
-
+import { eventSenderGA } from '../../tools/tools';
 
 function InputPlayer() {
     const [groups, setGroups] = useState([]);
@@ -36,6 +36,8 @@ function InputPlayer() {
             
         localStorage.setItem('groups', JSON.stringify(groups));
         
+        eventSenderGA("Paging", "Input People", "InputPlayer");
+
         navigate(`/${tournamentId}/match`);
     }
 

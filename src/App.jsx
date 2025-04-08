@@ -47,3 +47,10 @@ export default App
 
 // 점수 입력 -> url 접근 /:tournamentId/match
 // 계산 결과 -> url 접근 /:tournamentId/match/result
+
+
+// 처음 입력 버튼
+// 두번째 입력 버튼
+// 이름 입력
+// 
+// Link Button

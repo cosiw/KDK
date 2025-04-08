@@ -2,6 +2,7 @@ import React from 'react'
 import styles from './peopleInput.module.css'
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { eventSenderGA } from '../../tools/tools';
 function PeopleInput({setMode, groupCount}) {
     
         // 참가자 수를 저장할 상태 (배열)
@@ -38,6 +39,7 @@ function PeopleInput({setMode, groupCount}) {
             }
             localStorage.setItem('groups', JSON.stringify(groups));
             const tournamentId = localStorage.getItem('tournamentId');
+            eventSenderGA("Paging", "InputGroup", "PeopleInput");
             navigate(`/${tournamentId}`);
             
         }

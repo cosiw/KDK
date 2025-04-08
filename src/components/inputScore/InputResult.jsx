@@ -5,6 +5,7 @@ import {useEffect, useState} from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import styles from './inputResult.module.css';
 import ScoreInput from './ScoreInput';
+import { eventSenderGA } from '../../tools/tools';
 
 function InputResult() {
   // const {groupCount,peopleCount,matchId} = useParams();
@@ -199,6 +200,7 @@ function InputResult() {
     }
 
     const saveResult = () => {
+      eventSenderGA("Paging", "Result", "InputResult");
       groups.map(group => {
       
         let resultBoard = group.people.map(player => {
