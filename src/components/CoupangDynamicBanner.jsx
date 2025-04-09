@@ -19,9 +19,7 @@ function CoupangDynamicBanner({unit }) {
         src={unitMapper[unit].src}
         width={unitMapper[unit].width}
         height={unitMapper[unit].height}
-        frameborder="0" 
-        scrolling="no" 
-        referrerpolicy="unsafe-url" ></iframe>
+        scrolling="no" ></iframe>
     </div>
   )
 }

@@ -10,12 +10,17 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@prerenderer/renderer-puppeteer": "^1.2.4",
+    "@prerenderer/rollup-plugin": "^0.3.12",
     "@uidotdev/usehooks": "^2.4.1",
+    "ajv": "^8.11.0",
     "antd": "^5.24.5",
     "firebase": "^11.4.0",
+    "puppeteer": "^24.6.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-ga4": "^2.1.0",
+    "react-helmet-async": "^2.0.5",
     "react-router-dom": "^7.3.0",
     "uuid": "^11.1.0"
   },

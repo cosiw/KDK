@@ -2,6 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App.jsx'
 import Layout from './Layout.jsx'
+import { HelmetProvider } from 'react-helmet-async'
 
 window.addEventListener("beforeunload", () => {
   localStorage.clear();
@@ -10,9 +11,11 @@ window.addEventListener("beforeunload", () => {
 });
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
+  //<StrictMode>
+    <HelmetProvider>
     <Layout>
       <App />
     </Layout>   
-  </StrictMode>,
+    </HelmetProvider>
+  //</StrictMode>,
 )
