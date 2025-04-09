@@ -3,6 +3,8 @@ import {useState} from 'react';
 import styles from './mainInput.module.css';
 import {useNavigate} from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
+import KakaoAdfit from '../KakaoAdfit';
+import CoupangDynamicBanner from '../CoupangDynamicBanner';
 
 function MainInput({setMode}) {
 
@@ -43,6 +45,11 @@ function MainInput({setMode}) {
       </form>
       <div>
         <button className={styles.inputBtn} onClick={() => onButtonClick()}> 입력 </button>
+      </div>
+      <div style={{marginTop: "20px"}}>
+      
+      <KakaoAdfit />
+      <CoupangDynamicBanner unit={"introBanner"} />
       </div>
     </div>
 }
