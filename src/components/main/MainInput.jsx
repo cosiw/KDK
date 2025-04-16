@@ -5,7 +5,7 @@ import {useNavigate} from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import KakaoAdfit from '../KakaoAdfit';
 import CoupangDynamicBanner from '../CoupangDynamicBanner';
-
+import { Link } from 'react-router-dom';
 function MainInput({setMode}) {
 
     const [groupCount, setGroupCount] = useState(0);
@@ -32,7 +32,11 @@ function MainInput({setMode}) {
     }
     return <div>
         <img style={{width: "100%"}} src="/images/Table.png" alt="placeholder" />
+        <Link to="/how-to-use" className={styles.guideButton}>
+          이용 가이드
+        </Link>
         <h1>몇 개의 조인가요?</h1>
+
       <form>
       <div className = {styles.contentWrap}>
             <div className={styles.inputTitle}>
@@ -43,6 +47,7 @@ function MainInput({setMode}) {
             </div>
         </div>
       </form>
+
       <div>
         <button className={styles.inputBtn} onClick={() => onButtonClick()}> 입력 </button>
       </div>

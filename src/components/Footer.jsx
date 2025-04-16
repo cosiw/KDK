@@ -9,8 +9,10 @@ function Footer() {
         </h5>
         <p>tennisfolio1029@gmail.com</p>
         <p>
-            TennisFolio
-            <br />
+            TennisFolio 
+            <br/>
+            KDK
+            <br/>
             호스팅 서비스 : AWS
             <br />
 

@@ -5,6 +5,7 @@ import PlayerInfo from './page/PlayerInfo'
 import InputScore from './page/InputScore'
 import TournamentResult from './page/TournamentResult'
 import Privacy from './components/main/Privacy'
+import HowToUse from './components/main/HowToUse'
 import ReactGA4 from 'react-ga4'
 import { useEffect } from 'react'
 
@@ -31,8 +32,8 @@ function App() {
       <Route path='/:tournamentId' element={<PlayerInfo />}/>
       <Route path='/:tournamentId/match' element={<InputScore />}/>
       <Route path='/:tournamentId/match/result' element={<TournamentResult />}/>
-
       <Route path="/privacy" element= {<Privacy />} />
+      <Route path="/how-to-use" element= {<HowToUse />} />
     </Routes>
   </BrowserRouter>
   )
