@@ -1,12 +1,8 @@
-# React + Vite
+# TennisFolio.net 이용 가이드
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+- KDK란?
+KDK는 테니스 경기에서 조를 나누어 공정하고 효율적으로 경기를 진행하여 순위를 가릴 수 있는 방법입니다.
+기존에 종이를 출력하여 직접 작성하였던 것을 웹을 통해 누구든 편하게 접근할 수 있도록 구현하였습니다.
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- 이용 가이드 페이지 :
+https://tennisfolio.net/how-to-use
